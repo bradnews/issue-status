@@ -5,9 +5,8 @@ type BaseComponentType = {
   name: string;
   status:
     | "operational"
-    | "degradedPerformance"
-    | "partialOutage"
-    | "majorOutage"
+    | "investigation"
+    | "incident"
     | "unknown";
 };
 
@@ -42,7 +41,6 @@ export type Provider = {
   getComponents: () => Promise<ComponentType[]> | ComponentType[];
   getIncidents: () => Promise<IncidentType[]> | IncidentType[];
   getHistoricalIncidents: () => Promise<IncidentType[]> | IncidentType[];
-  cacheTime?: number;
 };
 
 export type IssueStatusConfig = {

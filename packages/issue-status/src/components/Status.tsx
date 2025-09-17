@@ -1,11 +1,9 @@
 import { useData } from "../api/useData";
 import type { ComponentType } from "../api/types";
 import { Skeleton } from "./Skeleton";
-import { useTranslation } from "react-i18next";
 
 const calculateOverallStatus = (
-  components: ComponentType[],
-  t: (key: string) => string
+  components: ComponentType[]
 ): { message: string; color: string } => {
   const allComponents = components.flatMap((comp) =>
     comp.children ? [comp, ...comp.children] : [comp]
@@ -21,66 +19,50 @@ const calculateOverallStatus = (
   if (statusCounts.operational === totalComponents) {
     // overall = operational
     return {
-      message: t("all_systems_operational"),
+      message: "All Systems Operational",
       color: "bg-green-600 dark:bg-green-700",
     };
   }
-  if (statusCounts.majorOutage === totalComponents) {
+  if (statusCounts.incident === totalComponents) {
     // overall = major
     return {
-      message: t("major_service_outage"),
+      message: "All BUs Active Incident",
       color: "bg-red-600 dark:bg-red-700",
     };
   }
-  if (statusCounts.partialOutage === totalComponents) {
+  if (statusCounts.investigation === totalComponents) {
     // overall = partial
     return {
-      message: t("partial_outage"),
+      message: "All BUs Under Investigation",
       color: "bg-red-500 dark:bg-red-600",
     };
   }
-  if (statusCounts.majorOutage > 0) {
+  
+
+  if (statusCounts.incident > 0) {
     // overall = partial
     return {
-      message: t("partial_outage"),
+      message: "Ongoing Cyber Incidents",
       color: "bg-red-500 dark:bg-red-600",
     };
   }
-  if (statusCounts.partialOutage > 0) {
+  if (statusCounts.investigation > 0) {
     // overall = minor
     return {
-      message: t("minor_service_outage"),
+      message: "Ongoing Cyber Investigation",
       color: "bg-yellow-600 dark:bg-yellow-700",
     };
   }
-  if (
-    statusCounts.degradedPerformance ===
-    totalComponents - (statusCounts.operational || 0)
-  ) {
-    // overall = degraded
-    return {
-      message: t("degraded"),
-      color: "bg-yellow-500 dark:bg-yellow-600",
-    };
-  }
-  if (statusCounts.degradedPerformance > 0) {
-    // overall = degraded
-    return {
-      message: t("degraded"),
-      color: "bg-yellow-500 dark:bg-yellow-600",
-    };
-  }
-
+  
   // overall = operational
   return {
-    message: t("all_systems_operational"),
+    message: "All Systems Operational",
     color: "bg-green-600 dark:bg-green-700",
   };
 };
 
 export const Status = () => {
   const { components, loading } = useData();
-  const { t } = useTranslation();
 
   if (loading || !components) {
     return (
@@ -90,7 +72,7 @@ export const Status = () => {
     );
   }
 
-  const { message, color } = calculateOverallStatus(components, t);
+  const { message, color } = calculateOverallStatus(components);
 
   return (
     <div
